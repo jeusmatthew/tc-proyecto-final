@@ -1,6 +1,7 @@
 import re
 import os
 
+
 def open_file():
     with open("factorial.mio", "r", encoding="UTF-8") as file:
         return file.read(), file.name
@@ -81,9 +82,6 @@ def lexical_analysis(input_code: str):
             lex_file.write(f"{token}\n")
 
     with open('./programa.sim', 'w', encoding='utf-8') as sim_file:
-        id_counter = 1
-        txt_counter = 1
-
         sim_file.write("IDS\n")
         # sim_file.write('\n'.join(identifiers) + '\n\n')
         for index, identifier in enumerate(identifiers):
