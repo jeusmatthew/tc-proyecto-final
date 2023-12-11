@@ -1,8 +1,9 @@
 import re
+import os
 
-from xml.sax.saxutils import prepare_input_source
-
-# def open
+def open_file():
+    with open("factorial.mio", "r", encoding="UTF-8") as file:
+        return file.read(), file.name
 
 
 def is_valid_identifier(token):
@@ -38,9 +39,7 @@ def lexical_analysis(input_code: str):
 
     tokens = []
     identifiers = []
-    id_counter = 0
     txt_literals = []
-    txt_counter = 0
     numeric_literals = []
 
     # previous_token = None
@@ -61,17 +60,16 @@ def lexical_analysis(input_code: str):
                 tokens.append(token)
             elif is_valid_identifier(token):
                 tokens.append("[id]")
-                if token not in identifiers:
-                    id_counter += 1
-                    identifiers.append(f"{token}, ID{id_counter:02}")
+                if token not in identifiers:  # Check if identifier already exists
+                    identifiers.append(token)
             elif is_valid_text_literal(token):
                 tokens.append("[txt]")
                 if token not in txt_literals:
-                    txt_literals.append(f"{token}, TXT{txt_counter:02}")
+                    txt_literals.append(token)
             elif is_valid_numeric_literal(token):
                 tokens.append("[val]")
                 if token not in numeric_literals:
-                    numeric_literals.append(f"{token}, {int(token, 16)}")
+                    numeric_literals.append(token)
             else:
                 print(
                     f"Error en la línea {line_number}: Unidad léxica no válida '{token}'")
@@ -83,41 +81,28 @@ def lexical_analysis(input_code: str):
             lex_file.write(f"{token}\n")
 
     with open('./programa.sim', 'w', encoding='utf-8') as sim_file:
+        id_counter = 1
+        txt_counter = 1
+
         sim_file.write("IDS\n")
-        sim_file.write('\n'.join(identifiers) + '\n\n')
+        # sim_file.write('\n'.join(identifiers) + '\n\n')
+        for index, identifier in enumerate(identifiers):
+            sim_file.write(f"{identifier}, ID{index+1:02}\n")
 
-        sim_file.write("TXT\n")
-        sim_file.write('\n'.join(txt_literals) + '\n\n')
+        sim_file.write("\nTXT\n")
+        for index, txt_literal in enumerate(txt_literals):
+            sim_file.write(f"{txt_literal}, TX{index+1:02}\n")
 
-        sim_file.write("VAL\n")
-        sim_file.write('\n'.join(numeric_literals) + '\n')
-
+        sim_file.write("\nVAL\n")
+        for numeric_literal in numeric_literals:
+            sim_file.write(f"{numeric_literal}, {int(numeric_literal, 16)}\n")
 
     return True
 
 
 def main():
-    # Ejemplo de uso
-    input_code = u"""
-    #* Programa que calcula el factorial de un número
-    #DSJSÑADFKLJFMKASDLJ 
-    PROGRAMA
-    # VarX acumula los productos por iteración
-    VarX = 0x1
-    # VarY contiene el iterador del factor
-    VarY = 0x0
-    LEE Num
-    #  Aplica Num! = 1 * 2 * 3 * ... * Num
-    REPITE NumVECES
-    VarY = VarY + 0x1
-    VarX = VarX * VarY
-    FINREP
-    IMPRIME “Factorial de ”
-    IMPRIME Num
-    IMPRIME “ es “
-    IMPRIME VarX
-    FINPROG 
-    """
+    input_code, filename = open_file()
+    filename = os.path.splitext(filename)[0]
 
     if lexical_analysis(input_code):
         print("Análisis sintáctico completado.")
