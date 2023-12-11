@@ -1,3 +1,8 @@
+# Excluyendo archivos nuestros .lex, .mio y .sim
+*.lex
+*.mio
+*.sim 
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
