@@ -15,7 +15,9 @@ def is_valid_numeric_literal(token):
     # Verifica si el token es un literal numérico válido
     return re.match(r'^(0x[0-9A-Fa-f]+|\d+)$', token)
 
-
+"""
+@:param input_code: Código fuente del programa a analizar
+"""
 def lexical_analysis(input_code: str):
     # Palabras reservadas y operadores
     keywords = set(['PROGRAMA', 'FINPROG', 'SI', 'ENTONCES', 'SINO',
@@ -33,20 +35,20 @@ def lexical_analysis(input_code: str):
         # Tokenizar la línea
         # Expresión regular para tokenizar
         for token in re.findall(r'[A-Za-z0-9]+|\"[^\"]+\"|==|>|<|=|[-+*/]', line):
-            if token in keywords:
-                tokens.append(('KEYWORD', token, line_number)) # (tipo, token, línea) va añadiendo cada linea a la lista
+            if token in keywords:   
+                tokens.append(token) # (tipo, token, línea) va añadiendo cada linea a la lista
             elif token in relational_operators:
-                tokens.append(('REL_OP', token[0], line_number))
+                tokens.append(token)
             elif token in arithmetic_operators:
-                tokens.append(('ARITH_OP', token, line_number))
+                tokens.append(token)
             elif token == '=':
-                tokens.append(('ASSIGNMENT', token, line_number))
+                tokens.append(token)
             elif is_valid_identifier(token):
-                tokens.append(('ID', token, line_number))
+                tokens.append("[id]")
             elif is_valid_text_literal(token):
-                tokens.append(('TEXT_LITERAL', token, line_number))
+                tokens.append("[txt]")
             elif is_valid_numeric_literal(token):
-                tokens.append(('NUMERIC_LITERAL', token, line_number))
+                tokens.append("[val]")
             else:
                 print(
                     f"Error en la línea {line_number}: Unidad léxica no válida '{token}'")
@@ -54,7 +56,7 @@ def lexical_analysis(input_code: str):
 
     with open('./programa.lex', 'w', encoding='utf-8') as lex_file:
         for token in tokens:
-            lex_file.write(f"{token[0]}: {token[1]}, Línea {token[2]}\n")
+            lex_file.write(f"{token}\n")
 
     return True
 
@@ -62,8 +64,9 @@ def lexical_analysis(input_code: str):
 def main():
     # Ejemplo de uso
     input_code = u"""
-    # Programa que calcula el factorial de un número
-    PROGRAMA factorial
+    * Programa que calcula el factorial de un número
+    DSJSÑADFKLJFMKASDLJ 
+    PROGRAMA
     # VarX acumula los productos por iteración
     VarX = 0x1
     # VarY contiene el iterador del factor
